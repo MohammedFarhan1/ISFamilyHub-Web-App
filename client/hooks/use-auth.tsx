@@ -27,7 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authAPI.getMe()
       setAdmin(response.data.admin)
-    } catch (error) {
+    } catch (error: any) {
       setAdmin(null)
     }
     setIsLoading(false)

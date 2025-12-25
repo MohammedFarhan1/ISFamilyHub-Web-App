@@ -13,6 +13,7 @@ const groceryRoutes = require('./routes/groceries');
 const mealRoutes = require('./routes/meals');
 const documentRoutes = require('./routes/documents');
 const inventoryRoutes = require('./routes/inventory');
+const Admin = require('./models/Admin');
 
 const app = express();
 
@@ -37,9 +38,26 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// MongoDB connection
+// MongoDB connection and admin initialization
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ Connected to MongoDB'))
+  .then(async () => {
+    console.log('✅ Connected to MongoDB');
+    
+    // Initialize admin users
+    const admins = [
+      { username: 'Farhan', password: 'Farhan8776', name: 'Farhan' },
+      { username: 'Sheerin', password: 'Shafan', name: 'Sheerin' }
+    ];
+
+    for (const adminData of admins) {
+      const existingAdmin = await Admin.findOne({ username: adminData.username });
+      if (!existingAdmin) {
+        const admin = new Admin(adminData);
+        await admin.save();
+        console.log(`✅ Created admin user: ${adminData.username}`);
+      }
+    }
+  })
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Routes
