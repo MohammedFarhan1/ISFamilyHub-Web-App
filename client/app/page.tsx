@@ -51,7 +51,7 @@ export default function HomePage() {
           todayLunch: 'Rice & Curry',
           todayDinner: 'Chapati & Sabji'
         })
-      } catch (error) {
+      } catch (error: any) {
         console.error('Failed to fetch dashboard data:', error)
       } finally {
         setDataLoading(false)

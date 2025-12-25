@@ -62,7 +62,7 @@ export default function DocumentsPage() {
       
       const response = await documentsAPI.getAll(params)
       setDocuments(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch documents:', error)
     } finally {
       setLoading(false)
@@ -93,7 +93,7 @@ export default function DocumentsPage() {
       setFormData({ title: '', ownerName: '' })
       setSelectedFile(null)
       fetchDocuments()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to upload document:', error)
       console.error('Error response:', error.response?.data)
     } finally {
@@ -106,7 +106,7 @@ export default function DocumentsPage() {
     try {
       await documentsAPI.delete(docId)
       fetchDocuments()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete document:', error)
     } finally {
       setDeleting(null)

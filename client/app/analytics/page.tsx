@@ -64,7 +64,7 @@ export default function AnalyticsPage() {
           .sort((a: any, b: any) => b.amount - a.amount),
         monthlyTrend: Object.values(monthlyTrend).slice(-6)
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch detailed analytics:', error)
     } finally {
       setLoading(false)

@@ -66,7 +66,7 @@ export default function ExpensesPage() {
           .map(([category, amount]) => ({ category, amount }))
           .sort((a: any, b: any) => b.amount - a.amount)
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch detailed analytics:', error)
     }
   }
@@ -75,7 +75,7 @@ export default function ExpensesPage() {
     try {
       await expensesAPI.delete(id)
       fetchData()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete expense:', error)
     }
   }
@@ -89,7 +89,7 @@ export default function ExpensesPage() {
       
       setExpenses(expensesRes.data.expenses)
       setAnalytics(analyticsRes.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch expenses:', error)
     } finally {
       setLoading(false)
@@ -114,7 +114,7 @@ export default function ExpensesPage() {
         date: new Date().toISOString().split('T')[0]
       })
       fetchData()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create expense:', error)
     }
   }

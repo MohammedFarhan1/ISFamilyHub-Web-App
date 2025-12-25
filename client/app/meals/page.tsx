@@ -36,7 +36,7 @@ export default function MealsPage() {
     try {
       const response = await mealsAPI.get({ weekStart: weekStart.toISOString() })
       setMealPlan(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch meal plan:', error)
     } finally {
       setLoading(false)
@@ -59,7 +59,7 @@ export default function MealsPage() {
       setDialogOpen(false)
       setMealInput('')
       fetchMealPlan()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update meal:', error)
     }
   }

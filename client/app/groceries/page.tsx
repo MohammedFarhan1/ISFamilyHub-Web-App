@@ -43,7 +43,7 @@ export default function GroceriesPage() {
     try {
       const response = await groceriesAPI.getAll()
       setGroceries(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch groceries:', error)
     } finally {
       setLoading(false)
@@ -55,7 +55,7 @@ export default function GroceriesPage() {
     try {
       await groceriesAPI.togglePurchased(id)
       fetchGroceries()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to toggle grocery:', error)
     }
   }
@@ -65,7 +65,7 @@ export default function GroceriesPage() {
     try {
       await groceriesAPI.delete(id)
       fetchGroceries()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete grocery item:', error)
     }
   }
@@ -85,7 +85,7 @@ export default function GroceriesPage() {
       setDialogOpen(false)
       setFormData({ name: '', category: '', customCategory: '', priority: 'medium' })
       fetchGroceries()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create grocery:', error)
       alert('Failed to add item. Please try again.')
     }

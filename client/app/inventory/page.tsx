@@ -36,7 +36,7 @@ export default function InventoryPage() {
     try {
       const response = await inventoryAPI.getAll({ search })
       setInventory(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch inventory:', error)
     } finally {
       setLoading(false)
@@ -50,7 +50,7 @@ export default function InventoryPage() {
       setDialogOpen(false)
       setFormData({ name: '', category: '', location: '', description: '' })
       fetchInventory()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create inventory item:', error)
     }
   }
@@ -60,7 +60,7 @@ export default function InventoryPage() {
     try {
       await inventoryAPI.delete(itemId)
       fetchInventory()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to delete inventory item:', error)
     } finally {
       setDeleting(null)

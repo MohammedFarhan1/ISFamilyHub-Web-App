@@ -38,7 +38,7 @@ export default function BillsPage() {
     try {
       const response = await billsAPI.getAll()
       setBills(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch bills:', error)
     } finally {
       setLoading(false)
@@ -50,7 +50,7 @@ export default function BillsPage() {
     try {
       await billsAPI.togglePaid(id)
       fetchBills()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to toggle bill:', error)
     }
   }
@@ -73,7 +73,7 @@ export default function BillsPage() {
         notes: ''
       })
       fetchBills()
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create bill:', error)
     }
   }
