@@ -1,5 +1,18 @@
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
+
+// Hardcoded admin users
+const ADMIN_USERS = {
+  'Farhan': {
+    password: 'Farhan8776',
+    name: 'Farhan',
+    id: 'admin_farhan'
+  },
+  'Sheerin': {
+    password: 'Shafan', 
+    name: 'Sheerin',
+    id: 'admin_sheerin'
+  }
+};
 
 const authMiddleware = async (req, res, next) => {
   try {
@@ -10,13 +23,17 @@ const authMiddleware = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const admin = await Admin.findById(decoded.id).select('-password');
+    const admin = ADMIN_USERS[decoded.username];
     
     if (!admin) {
       return res.status(401).json({ message: 'Invalid token.' });
     }
 
-    req.admin = admin;
+    req.admin = {
+      id: admin.id,
+      username: decoded.username,
+      name: admin.name
+    };
     next();
   } catch (error) {
     res.status(401).json({ message: 'Invalid token.' });

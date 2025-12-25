@@ -1,30 +1,38 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const Admin = require('../models/Admin');
-const authMiddleware = require('../middleware/auth');
 const { loginSchema } = require('../utils/validation');
 
 const router = express.Router();
+
+// Hardcoded admin users
+const ADMIN_USERS = {
+  'Farhan': {
+    password: 'Farhan8776',
+    name: 'Farhan',
+    id: 'admin_farhan'
+  },
+  'Sheerin': {
+    password: 'Shafan', 
+    name: 'Sheerin',
+    id: 'admin_sheerin'
+  }
+};
 
 // Login
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = loginSchema.parse(req.body);
 
-    const admin = await Admin.findOne({ username });
-    if (!admin || !(await admin.comparePassword(password))) {
+    const admin = ADMIN_USERS[username];
+    if (!admin || admin.password !== password) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
-      { id: admin._id, username: admin.username },
+      { id: admin.id, username: username },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
-
-    // Update last login
-    admin.lastLogin = new Date();
-    await admin.save();
 
     res.cookie('authToken', token, {
       httpOnly: true,
@@ -36,8 +44,8 @@ router.post('/login', async (req, res) => {
     res.json({
       message: 'Login successful',
       admin: {
-        id: admin._id,
-        username: admin.username,
+        id: admin.id,
+        username: username,
         name: admin.name
       }
     });
@@ -53,14 +61,31 @@ router.post('/logout', (req, res) => {
 });
 
 // Check auth status
-router.get('/me', authMiddleware, (req, res) => {
-  res.json({
-    admin: {
-      id: req.admin._id,
-      username: req.admin.username,
-      name: req.admin.name
+router.get('/me', (req, res) => {
+  try {
+    const token = req.cookies.authToken;
+    
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
     }
-  });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const admin = ADMIN_USERS[decoded.username];
+    
+    if (!admin) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    res.json({
+      admin: {
+        id: admin.id,
+        username: decoded.username,
+        name: admin.name
+      }
+    });
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid token' });
+  }
 });
 
 module.exports = router;
