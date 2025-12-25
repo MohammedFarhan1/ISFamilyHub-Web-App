@@ -33,13 +33,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(false)
   }
 
-  const login = async (username: string, password: string) => {
+  const login = async (username: string, password: string): Promise<void> => {
     setIsLoading(true)
     try {
       const response = await authAPI.login({ username, password })
       console.log('Auth API response:', response)
       setAdmin(response.data.admin)
-      return response
     } catch (error) {
       console.error('Auth API error:', error)
       throw error
