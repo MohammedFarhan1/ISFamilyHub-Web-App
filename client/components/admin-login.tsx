@@ -26,8 +26,8 @@ export default function AdminLogin() {
     try {
       const response = await login(username, password)
       console.log('Login response:', response)
-      // Force page reload to clear admin=true parameter
-      window.location.replace('/')
+      // Redirect to admin interface after successful login
+      window.location.replace('/?admin=true')
     } catch (error: any) {
       console.error('Login error:', error)
       setError(error.response?.data?.message || 'Login failed')
