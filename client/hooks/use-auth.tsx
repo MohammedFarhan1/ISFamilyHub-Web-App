@@ -22,15 +22,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [admin, setAdmin] = useState<Admin | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const [authChecked, setAuthChecked] = useState(false)
 
   const checkAuth = async () => {
+    if (authChecked) return // Prevent multiple auth checks
+    
     try {
       const response = await authAPI.getMe()
       setAdmin(response.data.admin)
     } catch (error: any) {
-      setAdmin(null)
+      // Only set admin to null if we haven't logged in yet
+      if (!admin) {
+        setAdmin(null)
+      }
     }
     setIsLoading(false)
+    setAuthChecked(true)
   }
 
   const login = async (username: string, password: string): Promise<void> => {
@@ -39,6 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await authAPI.login({ username, password })
       console.log('Auth API response:', response)
       setAdmin(response.data.admin)
+      setAuthChecked(true)
     } catch (error) {
       console.error('Auth API error:', error)
       throw error
@@ -50,11 +58,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     await authAPI.logout()
     setAdmin(null)
+    setAuthChecked(false)
   }
 
   useEffect(() => {
-    // Always check auth when component mounts
-    checkAuth()
+    // Only check auth once when component mounts
+    if (!authChecked) {
+      checkAuth()
+    }
   }, [])
 
   return (
