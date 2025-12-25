@@ -13,7 +13,7 @@ import Link from 'next/link'
 import { PieChart as RechartsPieChart, Cell, ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart as RechartsLineChart, Line, Area, AreaChart, Pie } from 'recharts'
 
 export default function AnalyticsPage() {
-  const [detailedAnalytics, setDetailedAnalytics] = useState(null)
+  const [detailedAnalytics, setDetailedAnalytics] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [chartType, setChartType] = useState('pie')
   const [timePeriod, setTimePeriod] = useState('month')
