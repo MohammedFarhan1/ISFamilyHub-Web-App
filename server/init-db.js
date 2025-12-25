@@ -31,7 +31,7 @@ adminSchema.pre('save', async function(next) {
   next();
 });
 
-const Admin = mongoose.model('Admin', adminSchema);
+const Admin = mongoose.models.Admin || mongoose.model('Admin', adminSchema);
 
 async function initializeDatabase() {
   try {
