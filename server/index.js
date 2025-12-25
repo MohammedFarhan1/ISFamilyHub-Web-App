@@ -28,9 +28,7 @@ app.use(rateLimit({
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? 'https://isfamilyhub-frontend.onrender.com' 
-    : 'http://localhost:3000',
+  origin: '*',
   credentials: true
 }));
 
@@ -41,13 +39,7 @@ app.use(cookieParser());
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('✅ Connected to MongoDB')
-    // Initialize admin users on startup
-    if (process.env.NODE_ENV === 'production') {
-      require('./init-db')
-    }
-  })
+  .then(() => console.log('✅ Connected to MongoDB'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
 // Routes
