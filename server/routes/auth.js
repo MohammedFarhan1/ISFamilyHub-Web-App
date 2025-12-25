@@ -34,16 +34,9 @@ router.post('/login', async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    res.cookie('authToken', token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      domain: '.onrender.com'
-    });
-
     res.json({
       message: 'Login successful',
+      token: token,
       admin: {
         id: admin.id,
         username: username,
@@ -64,7 +57,8 @@ router.post('/logout', (req, res) => {
 // Check auth status
 router.get('/me', (req, res) => {
   try {
-    const token = req.cookies.authToken;
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
     
     if (!token) {
       return res.status(401).json({ message: 'No token provided' });

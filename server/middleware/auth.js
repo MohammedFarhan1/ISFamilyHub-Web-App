@@ -16,7 +16,8 @@ const ADMIN_USERS = {
 
 const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.cookies.authToken;
+    const authHeader = req.headers.authorization;
+    const token = authHeader && authHeader.split(' ')[1];
     
     if (!token) {
       return res.status(401).json({ message: 'Access denied. No token provided.' });

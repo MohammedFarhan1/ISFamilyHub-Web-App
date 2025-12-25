@@ -45,6 +45,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await authAPI.login({ username, password })
       console.log('Auth API response:', response)
+      
+      // Store token in localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('authToken', response.data.token)
+      }
+      
       setAdmin(response.data.admin)
       setAuthChecked(true)
     } catch (error) {
@@ -56,7 +62,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const logout = async () => {
-    await authAPI.logout()
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('authToken')
+    }
     setAdmin(null)
     setAuthChecked(false)
   }
