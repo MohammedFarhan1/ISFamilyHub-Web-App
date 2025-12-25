@@ -28,7 +28,7 @@ app.use(rateLimit({
 
 // CORS configuration
 app.use(cors({
-  origin: '*',
+  origin: 'https://isfamilyhub-frontend.onrender.com',
   credentials: true
 }));
 
