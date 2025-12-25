@@ -16,12 +16,12 @@ import { groceriesAPI } from '@/lib/api'
 
 export default function GroceriesPage() {
   const { admin } = useAuth()
-  const [groceries, setGroceries] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filterCategory, setFilterCategory] = useState('')
-  const [filterStatus, setFilterStatus] = useState('')
+  const [groceries, setGroceries] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [filterCategory, setFilterCategory] = useState<string>('')
+  const [filterStatus, setFilterStatus] = useState<string>('')
   const [formData, setFormData] = useState({
     name: '',
     category: '',

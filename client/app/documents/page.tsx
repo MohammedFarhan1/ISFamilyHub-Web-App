@@ -17,14 +17,14 @@ import { formatDate } from '@/lib/utils'
 
 export default function DocumentsPage() {
   const { admin } = useAuth()
-  const [documents, setDocuments] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const [suggestions, setSuggestions] = useState([])
-  const [ownerFilter, setOwnerFilter] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [uploading, setUploading] = useState(false)
+  const [documents, setDocuments] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [search, setSearch] = useState<string>('')
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [ownerFilter, setOwnerFilter] = useState<string>('')
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [uploading, setUploading] = useState<boolean>(false)
   const [deleting, setDeleting] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     title: '',

@@ -12,7 +12,14 @@ import { formatCurrency } from '@/lib/utils'
 
 export default function HomePage() {
   const { admin, isLoading } = useAuth()
-  const [dashboardData, setDashboardData] = useState({
+  const [dashboardData, setDashboardData] = useState<{
+    monthlyExpenses: number;
+    monthlyIncome: number;
+    pendingBills: number;
+    groceryItems: number;
+    todayLunch: string;
+    todayDinner: string;
+  }>({
     monthlyExpenses: 0,
     monthlyIncome: 0,
     pendingBills: 0,
@@ -20,7 +27,7 @@ export default function HomePage() {
     todayLunch: 'Not planned',
     todayDinner: 'Not planned'
   })
-  const [dataLoading, setDataLoading] = useState(true)
+  const [dataLoading, setDataLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchDashboardData = async () => {

@@ -17,9 +17,9 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 export default function BillsPage() {
   const { admin } = useAuth()
-  const [bills, setBills] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [bills, setBills] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [formData, setFormData] = useState({
     name: '',
     amount: '',

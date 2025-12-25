@@ -17,12 +17,12 @@ import Link from 'next/link'
 
 export default function ExpensesPage() {
   const { admin } = useAuth()
-  const [expenses, setExpenses] = useState([])
-  const [analytics, setAnalytics] = useState(null)
-  const [chartDialogOpen, setChartDialogOpen] = useState(false)
-  const [detailedAnalytics, setDetailedAnalytics] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [expenses, setExpenses] = useState<any[]>([])
+  const [analytics, setAnalytics] = useState<any>(null)
+  const [chartDialogOpen, setChartDialogOpen] = useState<boolean>(false)
+  const [detailedAnalytics, setDetailedAnalytics] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [formData, setFormData] = useState({
     title: '',
     amount: '',

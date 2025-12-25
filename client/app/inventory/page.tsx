@@ -16,10 +16,10 @@ import { inventoryAPI } from '@/lib/api'
 
 export default function InventoryPage() {
   const { admin } = useAuth()
-  const [inventory, setInventory] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [inventory, setInventory] = useState<any[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [search, setSearch] = useState<string>('')
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [formData, setFormData] = useState({
     name: '',
     category: '',

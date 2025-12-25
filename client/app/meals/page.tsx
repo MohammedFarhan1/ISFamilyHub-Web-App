@@ -15,12 +15,12 @@ import { getWeekStart } from '@/lib/utils'
 
 export default function MealsPage() {
   const { admin } = useAuth()
-  const [mealPlan, setMealPlan] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [editingMeal, setEditingMeal] = useState({ day: '', mealType: '', currentMeal: '' })
-  const [weekStart, setWeekStart] = useState(getWeekStart())
-  const [mealInput, setMealInput] = useState('')
+  const [mealPlan, setMealPlan] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [editingMeal, setEditingMeal] = useState<{day: string, mealType: string, currentMeal: string}>({ day: '', mealType: '', currentMeal: '' })
+  const [weekStart, setWeekStart] = useState<Date>(getWeekStart())
+  const [mealInput, setMealInput] = useState<string>('')
 
   useEffect(() => {
     fetchMealPlan()
