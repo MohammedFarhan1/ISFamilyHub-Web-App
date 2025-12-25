@@ -53,14 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    // Don't check auth on admin login page to prevent loops
-    if (typeof window !== 'undefined') {
-      const urlParams = new URLSearchParams(window.location.search)
-      if (urlParams.get('admin') === 'true') {
-        setIsLoading(false)
-        return
-      }
-    }
+    // Always check auth when component mounts
     checkAuth()
   }, [])
 

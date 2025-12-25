@@ -72,7 +72,7 @@ export default function HomePage() {
     )
   }
 
-  const showAdminLogin = admin === null && typeof window !== 'undefined' && 
+  const showAdminLogin = admin === null && !isLoading && typeof window !== 'undefined' && 
     new URLSearchParams(window.location.search).get('admin') === 'true'
 
   if (showAdminLogin) {
