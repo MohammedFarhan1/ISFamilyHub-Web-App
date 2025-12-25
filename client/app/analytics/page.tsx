@@ -256,7 +256,7 @@ export default function AnalyticsPage() {
                             cy="50%"
                             labelLine={false}
                             label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={window.innerWidth < 640 ? 60 : 80}
+                            outerRadius={typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 80}
                             fill="#8884d8"
                             dataKey="value"
                             animationBegin={0}
@@ -277,8 +277,8 @@ export default function AnalyticsPage() {
                             cy="50%"
                             labelLine={false}
                             label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                            outerRadius={window.innerWidth < 640 ? 60 : 80}
-                            innerRadius={window.innerWidth < 640 ? 30 : 40}
+                            outerRadius={typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 80}
+                            innerRadius={typeof window !== 'undefined' && window.innerWidth < 640 ? 30 : 40}
                             fill="#8884d8"
                             dataKey="value"
                             animationBegin={0}
@@ -299,10 +299,10 @@ export default function AnalyticsPage() {
                             angle={-45} 
                             textAnchor="end" 
                             height={80}
-                            fontSize={window.innerWidth < 640 ? 10 : 12}
+                            fontSize={typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12}
                             interval={0}
                           />
-                          <YAxis tickFormatter={(value) => `$${value}`} fontSize={window.innerWidth < 640 ? 10 : 12} />
+                          <YAxis tickFormatter={(value) => `$${value}`} fontSize={typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12} />
                           <Tooltip formatter={(value) => formatCurrency(value as number)} />
                           <Bar dataKey="amount" fill="#8884d8" animationDuration={1000}>
                             {detailedAnalytics?.categoryBreakdown.slice(0, 8).map((entry: any, index: number) => (
@@ -313,12 +313,12 @@ export default function AnalyticsPage() {
                       ) : (
                         <RechartsLineChart data={detailedAnalytics?.monthlyTrend} margin={{ bottom: 20 }}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="month" fontSize={window.innerWidth < 640 ? 10 : 12} />
-                          <YAxis tickFormatter={(value) => `$${value}`} fontSize={window.innerWidth < 640 ? 10 : 12} />
+                          <XAxis dataKey="month" fontSize={typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12} />
+                          <YAxis tickFormatter={(value) => `$${value}`} fontSize={typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 12} />
                           <Tooltip formatter={(value) => formatCurrency(value as number)} />
-                          <Legend wrapperStyle={{ fontSize: window.innerWidth < 640 ? '10px' : '12px' }} />
-                          <Line type="monotone" dataKey="income" stroke="#82ca9d" strokeWidth={window.innerWidth < 640 ? 2 : 3} animationDuration={1000} />
-                          <Line type="monotone" dataKey="expense" stroke="#ff7300" strokeWidth={window.innerWidth < 640 ? 2 : 3} animationDuration={1000} />
+                          <Legend wrapperStyle={{ fontSize: typeof window !== 'undefined' && window.innerWidth < 640 ? '10px' : '12px' }} />
+                          <Line type="monotone" dataKey="income" stroke="#82ca9d" strokeWidth={typeof window !== 'undefined' && window.innerWidth < 640 ? 2 : 3} animationDuration={1000} />
+                          <Line type="monotone" dataKey="expense" stroke="#ff7300" strokeWidth={typeof window !== 'undefined' && window.innerWidth < 640 ? 2 : 3} animationDuration={1000} />
                         </RechartsLineChart>
                       )}
                     </ResponsiveContainer>

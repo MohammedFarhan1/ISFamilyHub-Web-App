@@ -88,8 +88,8 @@ export default function InventoryPage() {
   }
 
   const totalItems = inventory.length
-  const categories = [...new Set(inventory.map((item: any) => item.category))].length
-  const locations = [...new Set(inventory.map((item: any) => item.location))].length
+  const categories = Array.from(new Set(inventory.map((item: any) => item.category))).length
+  const locations = Array.from(new Set(inventory.map((item: any) => item.location))).length
 
   return (
     <Layout>
