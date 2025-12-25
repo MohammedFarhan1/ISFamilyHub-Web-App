@@ -248,7 +248,7 @@ export default function AnalyticsPage() {
                 <CardContent>
                   <div className="h-64 sm:h-80 w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                      {chartType === 'pie' && (
+                      {chartType === 'pie' ? (
                         <RechartsPieChart>
                           <Pie
                             data={detailedAnalytics?.categoryBreakdown.slice(0, 6)}
@@ -269,9 +269,7 @@ export default function AnalyticsPage() {
                           <Tooltip formatter={(value) => formatCurrency(value as number)} />
                           <Legend wrapperStyle={{ fontSize: '12px' }} />
                         </RechartsPieChart>
-                      )}
-                      
-                      {chartType === 'donut' && (
+                      ) : chartType === 'donut' ? (
                         <RechartsPieChart>
                           <Pie
                             data={detailedAnalytics?.categoryBreakdown.slice(0, 6)}
@@ -293,9 +291,7 @@ export default function AnalyticsPage() {
                           <Tooltip formatter={(value) => formatCurrency(value as number)} />
                           <Legend wrapperStyle={{ fontSize: '12px' }} />
                         </RechartsPieChart>
-                      )}
-                      
-                      {chartType === 'bar' && (
+                      ) : chartType === 'bar' ? (
                         <RechartsBarChart data={detailedAnalytics?.categoryBreakdown.slice(0, 8)} margin={{ bottom: 60 }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis 
@@ -314,9 +310,7 @@ export default function AnalyticsPage() {
                             ))}
                           </Bar>
                         </RechartsBarChart>
-                      )}
-                      
-                      {chartType === 'line' && (
+                      ) : (
                         <RechartsLineChart data={detailedAnalytics?.monthlyTrend} margin={{ bottom: 20 }}>
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="month" fontSize={window.innerWidth < 640 ? 10 : 12} />
