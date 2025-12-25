@@ -56,7 +56,7 @@ export default function DocumentsPage() {
 
   const fetchDocuments = async () => {
     try {
-      const params = {}
+      const params: any = {}
       if (search) params.search = search
       if (ownerFilter && ownerFilter !== 'all') params.ownerName = ownerFilter
       
