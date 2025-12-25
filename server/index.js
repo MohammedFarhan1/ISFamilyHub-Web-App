@@ -29,7 +29,7 @@ app.use(rateLimit({
 // CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? 'https://your-domain.com' 
+    ? 'https://isfamilyhub-frontend.onrender.com' 
     : 'http://localhost:3000',
   credentials: true
 }));
