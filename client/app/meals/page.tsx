@@ -123,36 +123,38 @@ export default function MealsPage() {
                 <div className="p-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl shadow-lg">
                   <ChefHat className="h-6 w-6 text-white" />
                 </div>
-                <div>
-                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-orange-600 via-red-600 to-pink-600 bg-clip-text text-transparent leading-tight">
                     Meal Planner
                   </h1>
-                  <p className="text-gray-600 mt-1">Plan your family's weekly meals</p>
+                  <p className="text-gray-600 mt-1 text-sm sm:text-base">Plan your family's weekly meals</p>
                 </div>
               </div>
               
               {/* Week Navigation */}
-              <div className="flex items-center space-x-3">
-                <Button 
-                  variant="outline" 
-                  onClick={() => changeWeek(-1)}
-                  className="hover:bg-orange-50 hover:border-orange-200 transition-all duration-300"
-                >
-                  ← Previous
-                </Button>
-                <div className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-100">
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <div className="flex items-center space-x-2 px-3 py-2 bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl border border-orange-100 order-2 sm:order-1">
                   <Calendar className="h-4 w-4 text-orange-600" />
-                  <span className="text-sm font-semibold text-gray-700">
-                    {weekStart.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                  <span className="text-xs sm:text-sm font-semibold text-gray-700">
+                    {weekStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>
-                <Button 
-                  variant="outline" 
-                  onClick={() => changeWeek(1)}
-                  className="hover:bg-orange-50 hover:border-orange-200 transition-all duration-300"
-                >
-                  Next →
-                </Button>
+                <div className="flex items-center space-x-2 order-1 sm:order-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => changeWeek(-1)}
+                    className="hover:bg-orange-50 hover:border-orange-200 transition-all duration-300 text-xs sm:text-sm px-3 py-2"
+                  >
+                    ← Prev
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => changeWeek(1)}
+                    className="hover:bg-orange-50 hover:border-orange-200 transition-all duration-300 text-xs sm:text-sm px-3 py-2"
+                  >
+                    Next →
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
