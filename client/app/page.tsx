@@ -213,7 +213,7 @@ export default function HomePage() {
                   {dataLoading ? (
                     <div className="shimmer h-8 w-24 rounded"></div>
                   ) : (
-                    <span className="animate-counter">₹{dashboardData.milkTotal.toFixed(2)}</span>
+                    <span className="animate-counter">₹{Math.round(dashboardData.milkTotal)}</span>
                   )}
                 </div>
                 <div className="text-xs text-gray-500 font-medium">
