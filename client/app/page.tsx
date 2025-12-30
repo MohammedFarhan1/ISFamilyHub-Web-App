@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { DollarSign, FileText, ShoppingCart, Package, AlertCircle, TrendingUp, Sparkles } from 'lucide-react'
+import { DollarSign, FileText, ShoppingCart, Package, AlertCircle, TrendingUp, Sparkles, Milk } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import Layout from '@/components/layout'
 import AdminLogin from '@/components/admin-login'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { expensesAPI, billsAPI, groceriesAPI, documentsAPI } from '@/lib/api'
+import { expensesAPI, billsAPI, groceriesAPI, documentsAPI, milkAPI } from '@/lib/api'
 import { formatCurrency } from '@/lib/utils'
 
 export default function HomePage() {
@@ -16,14 +16,14 @@ export default function HomePage() {
     monthlyExpenses: number;
     monthlyIncome: number;
     pendingBills: number;
-    groceryItems: number;
+    milkTotal: number;
     todayLunch: string;
     todayDinner: string;
   }>({
     monthlyExpenses: 0,
     monthlyIncome: 0,
     pendingBills: 0,
-    groceryItems: 0,
+    milkTotal: 0,
     todayLunch: 'Not planned',
     todayDinner: 'Not planned'
   })
@@ -32,22 +32,22 @@ export default function HomePage() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [expensesRes, billsRes, groceriesRes] = await Promise.all([
+        const [expensesRes, billsRes, milkRes] = await Promise.all([
           expensesAPI.getAnalytics({ period: 'month' }),
           billsAPI.getAll(),
-          groceriesAPI.getAll({ purchased: false })
+          milkAPI.getCurrentCycle()
         ])
 
         const expenses = expensesRes.data.summary.find((s: any) => s._id === 'expense')?.total || 0
         const income = expensesRes.data.summary.find((s: any) => s._id === 'income')?.total || 0
         const pendingBills = billsRes.data.filter((bill: any) => !bill.isPaid).length
-        const groceryItems = groceriesRes.data.length
+        const milkTotal = milkRes.data.total || 0
         
         setDashboardData({
           monthlyExpenses: expenses,
           monthlyIncome: income,
           pendingBills,
-          groceryItems,
+          milkTotal,
           todayLunch: 'Rice & Curry',
           todayDinner: 'Chapati & Sabji'
         })
@@ -203,21 +203,21 @@ export default function HomePage() {
           >
             <Card className="stat-card group cursor-pointer h-full">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <CardTitle className="text-sm font-semibold text-gray-700">Grocery Items</CardTitle>
+                <CardTitle className="text-sm font-semibold text-gray-700">Milk Total</CardTitle>
                 <div className="p-2 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <ShoppingCart className="h-4 w-4 text-white" />
+                  <Milk className="h-4 w-4 text-white" />
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-1">
                   {dataLoading ? (
-                    <div className="shimmer h-8 w-16 rounded"></div>
+                    <div className="shimmer h-8 w-24 rounded"></div>
                   ) : (
-                    <span className="animate-counter">{dashboardData.groceryItems}</span>
+                    <span className="animate-counter">₹{dashboardData.milkTotal.toFixed(2)}</span>
                   )}
                 </div>
                 <div className="text-xs text-gray-500 font-medium">
-                  Items to purchase
+                  Current cycle total
                 </div>
               </CardContent>
             </Card>
