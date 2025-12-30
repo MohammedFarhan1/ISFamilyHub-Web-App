@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
 import { milkAPI } from '@/lib/api'
 import { formatDate } from '@/lib/utils'
 
@@ -16,7 +18,8 @@ const QUANTITY_OPTIONS = [
   { ml: 250, price: 12.50, label: '250 ml' },
   { ml: 500, price: 25.00, label: '500 ml' },
   { ml: 750, price: 37.50, label: '750 ml' },
-  { ml: 1000, price: 50.00, label: '1 Liter' }
+  { ml: 1000, price: 50.00, label: '1 Liter' },
+  { ml: 1500, price: 75.00, label: '1.5 Liters' }
 ]
 
 export default function MilkCalcPage() {
@@ -27,6 +30,8 @@ export default function MilkCalcPage() {
   const [history, setHistory] = useState<any>(null)
   const [selectedMonth, setSelectedMonth] = useState('')
   const [loading, setLoading] = useState(true)
+  const [customDialogOpen, setCustomDialogOpen] = useState(false)
+  const [customQuantity, setCustomQuantity] = useState('')
 
   useEffect(() => {
     fetchTodayEntry()
@@ -80,6 +85,25 @@ export default function MilkCalcPage() {
       fetchCurrentCycle()
     } catch (error) {
       console.error('Failed to delete milk entry:', error)
+    }
+  }
+
+  const handleCustomQuantity = async () => {
+    if (!admin || !customQuantity) return
+    
+    const quantity = parseFloat(customQuantity) * 1000 // Convert liters to ml
+    
+    try {
+      await milkAPI.addEntry({
+        date: selectedDate,
+        quantity: Math.round(quantity)
+      })
+      setCustomDialogOpen(false)
+      setCustomQuantity('')
+      fetchTodayEntry()
+      fetchCurrentCycle()
+    } catch (error) {
+      console.error('Failed to add custom milk entry:', error)
     }
   }
 
@@ -194,7 +218,7 @@ export default function MilkCalcPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {QUANTITY_OPTIONS.map((option) => (
                   <Button
                     key={option.ml}
@@ -212,6 +236,51 @@ export default function MilkCalcPage() {
                     <span className="text-sm">₹{option.price}</span>
                   </Button>
                 ))}
+                
+                {/* Custom Quantity Button */}
+                <Dialog open={customDialogOpen} onOpenChange={setCustomDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      disabled={!admin}
+                      className={`h-20 flex flex-col space-y-1 text-center transition-all duration-300 hover:bg-purple-50 hover:border-purple-200 hover:scale-105 ${!admin ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      <span className="text-lg font-bold">Custom</span>
+                      <span className="text-sm">Any Amount</span>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Custom Quantity</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="customQty">Enter Quantity (Liters)</Label>
+                        <Input
+                          id="customQty"
+                          type="number"
+                          step="0.1"
+                          placeholder="e.g. 2.5 or 1.25"
+                          value={customQuantity}
+                          onChange={(e) => setCustomQuantity(e.target.value)}
+                          className="mt-1"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Price: ₹50 per liter
+                        </p>
+                      </div>
+                      <div className="flex justify-end space-x-3">
+                        <Button variant="outline" onClick={() => setCustomDialogOpen(false)}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleCustomQuantity} disabled={!customQuantity}>
+                          Add Entry
+                        </Button>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </CardContent>
           </Card>

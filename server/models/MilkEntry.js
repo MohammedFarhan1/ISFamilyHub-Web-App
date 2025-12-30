@@ -9,7 +9,7 @@ const milkEntrySchema = new mongoose.Schema({
   quantity: {
     type: Number,
     required: true,
-    enum: [250, 500, 750, 1000]
+    min: 1
   },
   amount: {
     type: Number,

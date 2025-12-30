@@ -9,7 +9,16 @@ const PRICE_MAP = {
   250: 12.50,
   500: 25.00,
   750: 37.50,
-  1000: 50.00
+  1000: 50.00,
+  1500: 75.00
+};
+
+// Calculate price for any quantity (₹50 per liter)
+const calculatePrice = (quantity) => {
+  if (PRICE_MAP[quantity]) {
+    return PRICE_MAP[quantity];
+  }
+  return (quantity / 1000) * 50; // ₹50 per liter
 };
 
 // Get current cycle start date (10th of current or previous month)
@@ -91,14 +100,14 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
     const { date, quantity } = req.body;
     
-    if (!PRICE_MAP[quantity]) {
+    if (!quantity || quantity < 1) {
       return res.status(400).json({ message: 'Invalid quantity' });
     }
     
     const entryDate = new Date(date);
     entryDate.setHours(0, 0, 0, 0);
     
-    const amount = PRICE_MAP[quantity];
+    const amount = calculatePrice(quantity);
     const cycleStart = getCurrentCycleStart();
     
     // Update existing or create new
