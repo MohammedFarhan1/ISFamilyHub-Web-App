@@ -13,6 +13,7 @@ const groceryRoutes = require('./routes/groceries');
 const mealRoutes = require('./routes/meals');
 const documentRoutes = require('./routes/documents');
 const inventoryRoutes = require('./routes/inventory');
+const milkRoutes = require('./routes/milk');
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use('/api/groceries', groceryRoutes);
 app.use('/api/meals', mealRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/inventory', inventoryRoutes);
+app.use('/api/milk', milkRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

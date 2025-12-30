@@ -82,4 +82,12 @@ export const inventoryAPI = {
   delete: (id: string) => api.delete(`/inventory/${id}`),
 }
 
+// Milk API
+export const milkAPI = {
+  getByDate: (date: string) => api.get(`/milk/date/${date}`),
+  getCurrentCycle: () => api.get('/milk/cycle/current'),
+  getHistory: (year: number, month: number) => api.get(`/milk/history/${year}/${month}`),
+  addEntry: (data: any) => api.post('/milk', data),
+}
+
 export default api
