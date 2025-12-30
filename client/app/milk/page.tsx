@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Milk, History, TrendingUp } from 'lucide-react'
+import { Calendar, Milk, History, TrendingUp, X } from 'lucide-react'
 import Layout from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -71,18 +71,15 @@ export default function MilkCalcPage() {
     }
   }
 
-  const handleQuantitySelect = async (quantity: number) => {
-    if (!admin) return
+  const handleDelete = async () => {
+    if (!admin || !todayEntry) return
     
     try {
-      await milkAPI.addEntry({
-        date: selectedDate,
-        quantity
-      })
+      await milkAPI.deleteEntry(selectedDate)
       fetchTodayEntry()
       fetchCurrentCycle()
     } catch (error) {
-      console.error('Failed to add milk entry:', error)
+      console.error('Failed to delete milk entry:', error)
     }
   }
 
@@ -222,7 +219,19 @@ export default function MilkCalcPage() {
                       Amount: ₹{todayEntry.amount}
                     </p>
                   </div>
-                  <Milk className="h-12 w-12 text-blue-500" />
+                  <div className="flex items-center space-x-2">
+                    <Milk className="h-12 w-12 text-blue-500" />
+                    {admin && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleDelete}
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full"
+                      >
+                        <X className="h-5 w-5" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="text-center py-8">

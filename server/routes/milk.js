@@ -123,4 +123,22 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
+// Delete milk entry (admin only)
+router.delete('/date/:date', authMiddleware, async (req, res) => {
+  try {
+    const date = new Date(req.params.date);
+    date.setHours(0, 0, 0, 0);
+    
+    const entry = await MilkEntry.findOneAndDelete({ date });
+    
+    if (!entry) {
+      return res.status(404).json({ message: 'No entry found for this date' });
+    }
+    
+    res.json({ message: 'Entry deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 module.exports = router;

@@ -88,6 +88,7 @@ export const milkAPI = {
   getCurrentCycle: () => api.get('/milk/cycle/current'),
   getHistory: (year: number, month: number) => api.get(`/milk/history/${year}/${month}`),
   addEntry: (data: any) => api.post('/milk', data),
+  deleteEntry: (date: string) => api.delete(`/milk/date/${date}`),
 }
 
 export default api
