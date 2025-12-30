@@ -83,6 +83,21 @@ export default function MilkCalcPage() {
     }
   }
 
+  const handleQuantitySelect = async (quantity: number) => {
+    if (!admin) return
+    
+    try {
+      await milkAPI.addEntry({
+        date: selectedDate,
+        quantity
+      })
+      fetchTodayEntry()
+      fetchCurrentCycle()
+    } catch (error) {
+      console.error('Failed to add milk entry:', error)
+    }
+  }
+
   const handleMonthSelect = (monthYear: string) => {
     setSelectedMonth(monthYear)
     if (monthYear) {
