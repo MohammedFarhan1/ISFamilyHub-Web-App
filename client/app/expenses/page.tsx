@@ -177,11 +177,11 @@ export default function ExpensesPage() {
                 </div>
               </div>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="hover:bg-purple-50 hover:border-purple-200 transition-all duration-300"
+                  className="hover:bg-purple-50 hover:border-purple-200 transition-all duration-300 w-full sm:w-auto"
                 >
                   <BarChart3 className="h-4 w-4 mr-2" />
                   <Link href="/analytics">View Analytics</Link>
@@ -192,7 +192,7 @@ export default function ExpensesPage() {
                       variant="outline" 
                       size="sm"
                       onClick={handleReset}
-                      className="hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700 transition-all duration-300"
+                      className="hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700 transition-all duration-300 w-full sm:w-auto"
                     >
                       <RotateCcw className="h-4 w-4 mr-2" />
                       Reset Month
@@ -201,7 +201,7 @@ export default function ExpensesPage() {
                     <DialogTrigger asChild>
                       <Button 
                         size="sm"
-                        className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Add Entry
