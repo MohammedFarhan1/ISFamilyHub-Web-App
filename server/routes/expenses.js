@@ -22,6 +22,11 @@ router.get('/', async (req, res) => {
 
     const filter = {};
     
+    // Only show non-reset entries by default
+    if (req.query.includeReset !== 'true') {
+      filter.isReset = { $ne: true };
+    }
+    
     if (startDate || endDate) {
       filter.date = {};
       if (startDate) filter.date.$gte = new Date(startDate);
@@ -71,7 +76,7 @@ router.get('/analytics', async (req, res) => {
     }
 
     const analytics = await Expense.aggregate([
-      { $match: { date: { $gte: startDate } } },
+      { $match: { date: { $gte: startDate }, isReset: { $ne: true } } },
       {
         $group: {
           _id: '$type',
@@ -82,7 +87,7 @@ router.get('/analytics', async (req, res) => {
     ]);
 
     const categoryBreakdown = await Expense.aggregate([
-      { $match: { date: { $gte: startDate }, type: 'expense' } },
+      { $match: { date: { $gte: startDate }, type: 'expense', isReset: { $ne: true } } },
       {
         $group: {
           _id: '$category',
@@ -94,7 +99,7 @@ router.get('/analytics', async (req, res) => {
     ]);
 
     const monthlyTrend = await Expense.aggregate([
-      { $match: { date: { $gte: new Date(new Date().getFullYear(), 0, 1) } } },
+      { $match: { date: { $gte: new Date(new Date().getFullYear(), 0, 1) }, isReset: { $ne: true } } },
       {
         $group: {
           _id: {
@@ -166,6 +171,37 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
 
     res.json({ message: 'Expense deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Reset monthly data (admin only)
+router.patch('/reset/:year/:month', authMiddleware, async (req, res) => {
+  try {
+    const year = parseInt(req.params.year);
+    const month = parseInt(req.params.month) - 1; // JS months are 0-indexed
+    
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 0, 23, 59, 59, 999);
+    
+    // Mark all expenses/income in the month as reset (soft delete)
+    const result = await Expense.updateMany(
+      {
+        date: { $gte: startDate, $lte: endDate },
+        isReset: { $ne: true }
+      },
+      {
+        isReset: true,
+        resetBy: req.admin.username,
+        resetDate: new Date()
+      }
+    );
+    
+    res.json({ 
+      message: `Reset ${result.modifiedCount} entries for ${startDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`,
+      count: result.modifiedCount
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

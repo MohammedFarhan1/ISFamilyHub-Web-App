@@ -44,6 +44,16 @@ const expenseSchema = new mongoose.Schema({
   addedBy: {
     type: String,
     required: true
+  },
+  isReset: {
+    type: Boolean,
+    default: false
+  },
+  resetBy: {
+    type: String
+  },
+  resetDate: {
+    type: Date
   }
 }, {
   timestamps: true

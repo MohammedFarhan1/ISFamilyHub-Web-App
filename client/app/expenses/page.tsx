@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Filter, Download, DollarSign, TrendingUp, TrendingDown, Wallet, CreditCard, BarChart3, Trash2 } from 'lucide-react'
+import { Plus, Filter, Download, DollarSign, TrendingUp, TrendingDown, Wallet, CreditCard, BarChart3, Trash2, RotateCcw } from 'lucide-react'
 import Layout from '@/components/layout'
 import { useAuth } from '@/hooks/use-auth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -68,6 +68,21 @@ export default function ExpensesPage() {
       })
     } catch (error: any) {
       console.error('Failed to fetch detailed analytics:', error)
+    }
+  }
+
+  const handleReset = async () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    
+    if (confirm(`Reset all expenses and income for ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}? This cannot be undone.`)) {
+      try {
+        await expensesAPI.reset(year, month)
+        fetchData()
+      } catch (error: any) {
+        console.error('Failed to reset data:', error)
+      }
     }
   }
 
@@ -172,7 +187,17 @@ export default function ExpensesPage() {
                   <Link href="/analytics">View Analytics</Link>
                 </Button>
                 {admin && (
-                  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleReset}
+                      className="hover:bg-red-50 hover:border-red-200 text-red-600 hover:text-red-700 transition-all duration-300"
+                    >
+                      <RotateCcw className="h-4 w-4 mr-2" />
+                      Reset Month
+                    </Button>
+                    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                     <DialogTrigger asChild>
                       <Button 
                         size="sm"
@@ -299,6 +324,7 @@ export default function ExpensesPage() {
                       </div>
                     </DialogContent>
                   </Dialog>
+                  </>
                 )}
               </div>
             </div>

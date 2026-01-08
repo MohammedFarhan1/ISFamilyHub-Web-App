@@ -32,6 +32,7 @@ export const expensesAPI = {
   create: (data: any) => api.post('/expenses', data),
   update: (id: string, data: any) => api.put(`/expenses/${id}`, data),
   delete: (id: string) => api.delete(`/expenses/${id}`),
+  reset: (year: number, month: number) => api.patch(`/expenses/reset/${year}/${month}`),
 }
 
 // Bills API
