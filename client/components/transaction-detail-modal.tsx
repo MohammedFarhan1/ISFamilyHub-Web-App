@@ -70,6 +70,13 @@ export default function TransactionDetailModal({ transaction, isOpen, onClose }:
 
             {/* Content */}
             <div className="p-6 space-y-6">
+              {/* Title */}
+              {transaction.notes && (
+                <div className="text-center border-b border-gray-100 pb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">{transaction.notes}</h3>
+                </div>
+              )}
+
               {/* Amount */}
               <div className="text-center">
                 <div className={`text-3xl font-bold ${transaction.type === 'expense' ? 'text-red-600' : 'text-green-600'}`}>

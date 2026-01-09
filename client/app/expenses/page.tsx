@@ -426,56 +426,6 @@ export default function ExpensesPage() {
           </motion.div>
         </div>
 
-        {/* Top Categories */}
-        {topCategories.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <Card className="floating-card">
-              <CardHeader>
-                <CardTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
-                    <BarChart3 className="h-5 w-5 text-white" />
-                  </div>
-                  Top Expense Categories
-                </CardTitle>
-                <CardDescription className="text-gray-600">
-                  Your highest spending categories this month
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {topCategories.map((category: any, index: number) => (
-                    <motion.div
-                      key={category.category}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
-                      onClick={() => handleCategoryClick(category.category)}
-                    >
-                      <div className="flex items-center space-x-3">
-                        <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl">
-                          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-purple-500" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-800">{category.category}</p>
-                          <p className="text-sm text-gray-500">Tap to view transactions</p>
-                        </div>
-                      </div>
-                      <div className="text-lg font-bold text-red-600">
-                        {formatCurrency(category.amount)}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
-
         {/* Recent Transactions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
