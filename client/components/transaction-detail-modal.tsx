@@ -44,17 +44,30 @@ export default function TransactionDetailModal({ transaction, isOpen, onClose }:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50"
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
             onClick={onClose}
           />
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, y: '100%' }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: '100%' }}
+            initial={{ 
+              opacity: 0, 
+              y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0 : '100%',
+              scale: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0.95 : 1
+            }}
+            animate={{ 
+              opacity: 1, 
+              y: 0,
+              scale: 1
+            }}
+            exit={{ 
+              opacity: 0, 
+              y: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0 : '100%',
+              scale: typeof window !== 'undefined' && window.innerWidth >= 1024 ? 0.95 : 1
+            }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl max-h-[80vh] overflow-hidden lg:fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-2xl lg:max-w-md lg:w-full lg:max-h-[90vh] lg:bottom-auto lg:right-auto"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl max-h-[80vh] overflow-hidden lg:fixed lg:top-1/2 lg:left-1/2 lg:transform lg:-translate-x-1/2 lg:-translate-y-1/2 lg:rounded-2xl lg:max-w-lg lg:w-full lg:max-h-[85vh] lg:bottom-auto lg:right-auto lg:shadow-xl"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
