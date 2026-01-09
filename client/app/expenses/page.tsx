@@ -72,6 +72,30 @@ export default function ExpensesPage() {
     }
   }
 
+  const handleDelete = async (id: string) => {
+    try {
+      await expensesAPI.delete(id)
+      fetchData()
+    } catch (error: any) {
+      console.error('Failed to delete expense:', error)
+    }
+  }
+
+  const handleReset = async () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    
+    if (confirm(`Reset all expenses and income for ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}? This cannot be undone.`)) {
+      try {
+        await expensesAPI.delete('reset')
+        fetchData()
+      } catch (error: any) {
+        console.error('Failed to reset data:', error)
+      }
+    }
+  }
+
   const handleTransactionClick = (transaction: any) => {
     setSelectedTransaction(transaction)
     setIsModalOpen(true)
