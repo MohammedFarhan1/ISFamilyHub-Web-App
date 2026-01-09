@@ -8,6 +8,7 @@ import { formatCurrency } from '@/lib/utils'
 
 interface Transaction {
   _id: string
+  title?: string
   amount: number
   category: string
   paymentMethod: string
