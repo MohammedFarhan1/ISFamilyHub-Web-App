@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Filter, Download, DollarSign, TrendingUp, TrendingDown, Wallet, CreditCard, BarChart3, Trash2, RotateCcw } from 'lucide-react'
 import Layout from '@/components/layout'
+import TransactionDetailModal from '@/components/transaction-detail-modal'
 import { useAuth } from '@/hooks/use-auth'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -14,15 +15,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { expensesAPI } from '@/lib/api'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 export default function ExpensesPage() {
   const { admin } = useAuth()
+  const router = useRouter()
   const [expenses, setExpenses] = useState<any[]>([])
   const [analytics, setAnalytics] = useState<any>(null)
-  const [chartDialogOpen, setChartDialogOpen] = useState<boolean>(false)
-  const [detailedAnalytics, setDetailedAnalytics] = useState<any>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+  const [selectedTransaction, setSelectedTransaction] = useState<any>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [topCategories, setTopCategories] = useState<any[]>([])
   const [formData, setFormData] = useState({
     title: '',
     amount: '',
@@ -37,64 +41,6 @@ export default function ExpensesPage() {
     fetchData()
   }, [])
 
-  const fetchDetailedAnalytics = async () => {
-    try {
-      const [weeklyRes, monthlyRes, categoryRes] = await Promise.all([
-        expensesAPI.getAnalytics({ period: 'week' }),
-        expensesAPI.getAnalytics({ period: 'month' }),
-        expensesAPI.getAll({ limit: 1000 })
-      ])
-      
-      const allExpenses = categoryRes.data.expenses
-      const today = new Date()
-      const dailyTotal = allExpenses
-        .filter((exp: any) => new Date(exp.date).toDateString() === today.toDateString())
-        .reduce((sum: number, exp: any) => sum + (exp.type === 'expense' ? exp.amount : -exp.amount), 0)
-      
-      const categoryBreakdown = allExpenses.reduce((acc: any, exp: any) => {
-        if (exp.type === 'expense') {
-          acc[exp.category] = (acc[exp.category] || 0) + exp.amount
-        }
-        return acc
-      }, {})
-      
-      setDetailedAnalytics({
-        weekly: weeklyRes.data,
-        monthly: monthlyRes.data,
-        daily: dailyTotal,
-        categoryBreakdown: Object.entries(categoryBreakdown)
-          .map(([category, amount]) => ({ category, amount }))
-          .sort((a: any, b: any) => b.amount - a.amount)
-      })
-    } catch (error: any) {
-      console.error('Failed to fetch detailed analytics:', error)
-    }
-  }
-
-  const handleReset = async () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = now.getMonth() + 1
-    
-    if (confirm(`Reset all expenses and income for ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}? This cannot be undone.`)) {
-      try {
-        await expensesAPI.reset(year, month)
-        fetchData()
-      } catch (error: any) {
-        console.error('Failed to reset data:', error)
-      }
-    }
-  }
-
-  const handleDelete = async (id: string) => {
-    try {
-      await expensesAPI.delete(id)
-      fetchData()
-    } catch (error: any) {
-      console.error('Failed to delete expense:', error)
-    }
-  }
-
   const fetchData = async () => {
     try {
       const [expensesRes, analyticsRes] = await Promise.all([
@@ -104,11 +50,35 @@ export default function ExpensesPage() {
       
       setExpenses(expensesRes.data.expenses)
       setAnalytics(analyticsRes.data)
+      
+      // Calculate top categories
+      const categoryTotals = expensesRes.data.expenses
+        .filter((exp: any) => exp.type === 'expense')
+        .reduce((acc: any, exp: any) => {
+          acc[exp.category] = (acc[exp.category] || 0) + exp.amount
+          return acc
+        }, {})
+      
+      const sortedCategories = Object.entries(categoryTotals)
+        .map(([category, amount]) => ({ category, amount }))
+        .sort((a: any, b: any) => b.amount - a.amount)
+        .slice(0, 5)
+      
+      setTopCategories(sortedCategories)
     } catch (error: any) {
       console.error('Failed to fetch expenses:', error)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleTransactionClick = (transaction: any) => {
+    setSelectedTransaction(transaction)
+    setIsModalOpen(true)
+  }
+
+  const handleCategoryClick = (category: string) => {
+    router.push(`/category-transactions?category=${encodeURIComponent(category)}`)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -432,6 +402,56 @@ export default function ExpensesPage() {
           </motion.div>
         </div>
 
+        {/* Top Categories */}
+        {topCategories.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Card className="floating-card">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                  <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg">
+                    <BarChart3 className="h-5 w-5 text-white" />
+                  </div>
+                  Top Expense Categories
+                </CardTitle>
+                <CardDescription className="text-gray-600">
+                  Your highest spending categories this month
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {topCategories.map((category: any, index: number) => (
+                    <motion.div
+                      key={category.category}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                      onClick={() => handleCategoryClick(category.category)}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="p-2 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl">
+                          <div className="w-3 h-3 rounded-full bg-gradient-to-br from-blue-500 to-purple-500" />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-gray-800">{category.category}</p>
+                          <p className="text-sm text-gray-500">Tap to view transactions</p>
+                        </div>
+                      </div>
+                      <div className="text-lg font-bold text-red-600">
+                        {formatCurrency(category.amount)}
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+
         {/* Recent Transactions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -468,7 +488,8 @@ export default function ExpensesPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-[1.02]"
+                      className="flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl hover:shadow-md transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+                      onClick={() => handleTransactionClick(expense)}
                     >
                       <div className="flex items-center space-x-3">
                         <div className={`p-2 sm:p-3 rounded-xl ${
@@ -518,6 +539,13 @@ export default function ExpensesPage() {
             </CardContent>
           </Card>
         </motion.div>
+
+        {/* Transaction Detail Modal */}
+        <TransactionDetailModal
+          transaction={selectedTransaction}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </Layout>
   )
