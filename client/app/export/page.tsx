@@ -15,8 +15,8 @@ export default function ExportPage() {
     startDate: '',
     endDate: '',
     type: 'all',
-    category: '',
-    paymentMethod: ''
+    category: 'all',
+    paymentMethod: 'all'
   })
   const [isExporting, setIsExporting] = useState(false)
 
@@ -35,8 +35,8 @@ export default function ExportPage() {
       if (filters.startDate) params.startDate = filters.startDate
       if (filters.endDate) params.endDate = filters.endDate
       if (filters.type !== 'all') params.type = filters.type
-      if (filters.category) params.category = filters.category
-      if (filters.paymentMethod) params.paymentMethod = filters.paymentMethod
+      if (filters.category !== 'all') params.category = filters.category
+      if (filters.paymentMethod !== 'all') params.paymentMethod = filters.paymentMethod
 
       const response = await expensesAPI.getAll(params)
       const transactions = response.data.expenses || []
@@ -220,7 +220,7 @@ export default function ExportPage() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}
@@ -237,7 +237,7 @@ export default function ExportPage() {
                   <SelectValue placeholder="All Payment Methods" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Payment Methods</SelectItem>
+                  <SelectItem value="all">All Payment Methods</SelectItem>
                   {paymentMethods.map(method => (
                     <SelectItem key={method} value={method}>{method}</SelectItem>
                   ))}
