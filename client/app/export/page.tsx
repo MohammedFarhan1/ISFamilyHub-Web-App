@@ -39,7 +39,7 @@ export default function ExportPage() {
       if (filters.paymentMethod) params.paymentMethod = filters.paymentMethod
 
       const response = await expensesAPI.getAll(params)
-      const transactions = response.data.expenses || response.data || []
+      const transactions = response.data.expenses || []
 
       if (format === 'pdf') {
         exportToPDF(transactions)
@@ -220,7 +220,7 @@ export default function ExportPage() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>{category}</SelectItem>
                     ))}
