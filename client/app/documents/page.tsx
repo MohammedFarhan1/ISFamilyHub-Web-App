@@ -22,7 +22,7 @@ export default function DocumentsPage() {
   const [search, setSearch] = useState<string>('')
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
   const [suggestions, setSuggestions] = useState<string[]>([])
-  const [ownerFilter, setOwnerFilter] = useState<string>('')
+  const [ownerFilter, setOwnerFilter] = useState<string>('all')
   const [dialogOpen, setDialogOpen] = useState<boolean>(false)
   const [uploading, setUploading] = useState<boolean>(false)
   const [deleting, setDeleting] = useState<string | null>(null)
