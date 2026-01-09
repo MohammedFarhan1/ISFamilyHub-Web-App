@@ -59,6 +59,11 @@ export default function ExportPage() {
       return
     }
 
+    // Calculate totals
+    const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0)
+    const totalExpenses = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+    const netBalance = totalIncome - totalExpenses
+
     // Simple PDF export using browser print
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
@@ -74,17 +79,42 @@ export default function ExportPage() {
           <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             h1 { color: #333; }
+            .summary { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; }
+            .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+            .summary-item { text-align: center; }
+            .summary-label { font-size: 12px; color: #666; text-transform: uppercase; }
+            .summary-value { font-size: 18px; font-weight: bold; margin-top: 5px; }
+            .income { color: #16a34a; }
+            .expense { color: #dc2626; }
+            .balance { color: #2563eb; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
             th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
             th { background-color: #f5f5f5; }
-            .expense { color: #dc2626; }
-            .income { color: #16a34a; }
           </style>
         </head>
         <body>
           <h1>ISFamilyHub - Transaction Export</h1>
           <p>Export Date: ${new Date().toLocaleDateString()}</p>
           <p>Date Range: ${filters.startDate || 'All'} - ${filters.endDate || 'All'}</p>
+          
+          <div class="summary">
+            <h3>Financial Summary</h3>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <div class="summary-label">Monthly Income</div>
+                <div class="summary-value income">₹${totalIncome.toLocaleString()}</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Monthly Expenses</div>
+                <div class="summary-value expense">₹${totalExpenses.toLocaleString()}</div>
+              </div>
+              <div class="summary-item">
+                <div class="summary-label">Net Balance</div>
+                <div class="summary-value balance">₹${netBalance.toLocaleString()}</div>
+              </div>
+            </div>
+          </div>
+          
           <table>
             <thead>
               <tr>
@@ -128,18 +158,39 @@ export default function ExportPage() {
     }
 
     try {
-      // Simple CSV export (opens as Excel)
+      // Calculate totals
+      const totalIncome = transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0)
+      const totalExpenses = transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amount, 0)
+      const netBalance = totalIncome - totalExpenses
+
+      // CSV export with summary
+      const summaryRows = [
+        ['ISFamilyHub - Financial Summary'],
+        ['Export Date', new Date().toLocaleDateString()],
+        ['Date Range', `${filters.startDate || 'All'} - ${filters.endDate || 'All'}`],
+        [''],
+        ['Financial Summary'],
+        ['Monthly Income', `₹${totalIncome.toLocaleString()}`],
+        ['Monthly Expenses', `₹${totalExpenses.toLocaleString()}`],
+        ['Net Balance', `₹${netBalance.toLocaleString()}`],
+        [''],
+        ['Transaction Details']
+      ]
+      
       const headers = ['Date', 'Title', 'Type', 'Category', 'Amount', 'Payment Method']
+      const transactionRows = transactions.map(t => [
+        new Date(t.date).toLocaleDateString(),
+        (t.title || 'Untitled Transaction').replace(/"/g, '""'),
+        t.type,
+        t.category,
+        t.amount,
+        t.paymentMethod
+      ])
+      
       const csvContent = [
+        ...summaryRows.map(row => row.map(field => `"${field}"`).join(',')),
         headers.join(','),
-        ...transactions.map(t => [
-          new Date(t.date).toLocaleDateString(),
-          (t.title || 'Untitled Transaction').replace(/"/g, '""'),
-          t.type,
-          t.category,
-          t.amount,
-          t.paymentMethod
-        ].map(field => `"${field}"`).join(','))
+        ...transactionRows.map(row => row.map(field => `"${field}"`).join(','))
       ].join('\n')
 
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
