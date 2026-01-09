@@ -39,7 +39,7 @@ export default function ExportPage() {
       if (filters.paymentMethod) params.paymentMethod = filters.paymentMethod
 
       const response = await expensesAPI.getAll(params)
-      const transactions = response.data
+      const transactions = response.data.expenses || response.data || []
 
       if (format === 'pdf') {
         exportToPDF(transactions)
@@ -54,9 +54,17 @@ export default function ExportPage() {
   }
 
   const exportToPDF = (transactions: any[]) => {
+    if (!transactions || transactions.length === 0) {
+      alert('No transactions to export')
+      return
+    }
+
     // Simple PDF export using browser print
     const printWindow = window.open('', '_blank')
-    if (!printWindow) return
+    if (!printWindow) {
+      alert('Please allow popups to export PDF')
+      return
+    }
 
     const html = `
       <!DOCTYPE html>
@@ -89,16 +97,19 @@ export default function ExportPage() {
               </tr>
             </thead>
             <tbody>
-              ${transactions.map(t => `
+              ${transactions.map(t => {
+                const title = (t.title || 'Untitled Transaction').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                return `
                 <tr>
                   <td>${new Date(t.date).toLocaleDateString()}</td>
-                  <td>${t.title || 'Untitled Transaction'}</td>
+                  <td>${title}</td>
                   <td class="${t.type}">${t.type}</td>
                   <td>${t.category}</td>
                   <td class="${t.type}">₹${t.amount.toLocaleString()}</td>
                   <td>${t.paymentMethod}</td>
                 </tr>
-              `).join('')}
+                `
+              }).join('')}
             </tbody>
           </table>
         </body>
@@ -111,27 +122,39 @@ export default function ExportPage() {
   }
 
   const exportToExcel = (transactions: any[]) => {
-    // Simple CSV export (opens as Excel)
-    const headers = ['Date', 'Title', 'Type', 'Category', 'Amount', 'Payment Method']
-    const csvContent = [
-      headers.join(','),
-      ...transactions.map(t => [
-        new Date(t.date).toLocaleDateString(),
-        t.title || 'Untitled Transaction',
-        t.type,
-        t.category,
-        t.amount,
-        t.paymentMethod
-      ].map(field => `"${field}"`).join(','))
-    ].join('\n')
+    if (!transactions || transactions.length === 0) {
+      alert('No transactions to export')
+      return
+    }
 
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `transactions-${new Date().toISOString().split('T')[0]}.csv`
-    a.click()
-    window.URL.revokeObjectURL(url)
+    try {
+      // Simple CSV export (opens as Excel)
+      const headers = ['Date', 'Title', 'Type', 'Category', 'Amount', 'Payment Method']
+      const csvContent = [
+        headers.join(','),
+        ...transactions.map(t => [
+          new Date(t.date).toLocaleDateString(),
+          (t.title || 'Untitled Transaction').replace(/"/g, '""'),
+          t.type,
+          t.category,
+          t.amount,
+          t.paymentMethod
+        ].map(field => `"${field}"`).join(','))
+      ].join('\n')
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `transactions-${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Excel export failed:', error)
+      alert('Export failed. Please try again.')
+    }
   }
 
   return (
