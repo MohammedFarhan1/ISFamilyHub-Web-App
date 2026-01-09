@@ -71,9 +71,11 @@ export default function TransactionDetailModal({ transaction, isOpen, onClose }:
             {/* Content */}
             <div className="p-6 space-y-6">
               {/* Title */}
-              {transaction.notes && (
+              {(transaction.title || transaction.notes) && (
                 <div className="text-center border-b border-gray-100 pb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">{transaction.notes}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {transaction.title || transaction.notes || 'Untitled Transaction'}
+                  </h3>
                 </div>
               )}
 

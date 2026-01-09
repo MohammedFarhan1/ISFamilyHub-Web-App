@@ -211,12 +211,12 @@ export default function ExpensesPage() {
                       <div className="max-h-[70vh] overflow-y-auto px-1">
                         <form onSubmit={handleSubmit} className="space-y-4">
                           <div>
-                            <Label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">Title</Label>
+                            <Label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">Title *</Label>
                             <Input
                               id="title"
                               value={formData.title}
                               onChange={(e) => setFormData({...formData, title: e.target.value})}
-                              placeholder="Name of the expense/income"
+                              placeholder="Enter transaction title"
                               required
                             />
                           </div>
@@ -476,7 +476,9 @@ export default function ExpensesPage() {
                           }`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-800 text-sm sm:text-base truncate">{expense.title}</p>
+                          <p className="font-semibold text-gray-800 text-sm sm:text-base truncate">
+                            {expense.title || 'Untitled Transaction'}
+                          </p>
                           <p className="text-xs sm:text-sm text-gray-500">
                             {expense.category} • {formatDate(expense.date)}
                           </p>

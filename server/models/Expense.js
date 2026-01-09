@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const expenseSchema = new mongoose.Schema({
+  title: {
+    type: String,
+    maxlength: 200
+  },
   date: {
     type: Date,
     required: true,

@@ -121,7 +121,7 @@ export default function CategoryTransactionsPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="font-medium text-gray-900 mb-1">
-                          {transaction.notes || `${transaction.type} - ${transaction.category}`}
+                          {transaction.title || 'Untitled Transaction'}
                         </div>
                         <div className="flex items-center space-x-4 text-sm text-gray-500">
                           <div className="flex items-center space-x-1">

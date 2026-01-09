@@ -6,6 +6,7 @@ const loginSchema = z.object({
 });
 
 const expenseSchema = z.object({
+  title: z.string().min(1, 'Title is required').max(200),
   date: z.string().optional(),
   amount: z.number().positive('Amount must be positive'),
   category: z.enum([

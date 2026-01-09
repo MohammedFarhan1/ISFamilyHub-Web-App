@@ -46,12 +46,19 @@ router.get('/', async (req, res) => {
     const expenses = await Expense.find(filter)
       .sort({ date: -1 })
       .limit(limit * 1)
-      .skip((page - 1) * limit);
+      .skip((page - 1) * limit)
+      .lean();
+
+    // Add fallback title for old transactions
+    const expensesWithTitle = expenses.map(expense => ({
+      ...expense,
+      title: expense.title || 'Untitled Transaction'
+    }));
 
     const total = await Expense.countDocuments(filter);
 
     res.json({
-      expenses,
+      expenses: expensesWithTitle,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total

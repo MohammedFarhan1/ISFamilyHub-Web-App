@@ -81,22 +81,22 @@ export default function ExportPage() {
             <thead>
               <tr>
                 <th>Date</th>
+                <th>Title</th>
                 <th>Type</th>
                 <th>Category</th>
                 <th>Amount</th>
                 <th>Payment Method</th>
-                <th>Notes</th>
               </tr>
             </thead>
             <tbody>
               ${transactions.map(t => `
                 <tr>
                   <td>${new Date(t.date).toLocaleDateString()}</td>
+                  <td>${t.title || 'Untitled Transaction'}</td>
                   <td class="${t.type}">${t.type}</td>
                   <td>${t.category}</td>
                   <td class="${t.type}">₹${t.amount.toLocaleString()}</td>
                   <td>${t.paymentMethod}</td>
-                  <td>${t.notes || '-'}</td>
                 </tr>
               `).join('')}
             </tbody>
@@ -112,16 +112,16 @@ export default function ExportPage() {
 
   const exportToExcel = (transactions: any[]) => {
     // Simple CSV export (opens as Excel)
-    const headers = ['Date', 'Type', 'Category', 'Amount', 'Payment Method', 'Notes']
+    const headers = ['Date', 'Title', 'Type', 'Category', 'Amount', 'Payment Method']
     const csvContent = [
       headers.join(','),
       ...transactions.map(t => [
         new Date(t.date).toLocaleDateString(),
+        t.title || 'Untitled Transaction',
         t.type,
         t.category,
         t.amount,
-        t.paymentMethod,
-        t.notes || ''
+        t.paymentMethod
       ].map(field => `"${field}"`).join(','))
     ].join('\n')
 
