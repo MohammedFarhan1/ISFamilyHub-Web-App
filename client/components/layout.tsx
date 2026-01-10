@@ -15,7 +15,8 @@ import {
   LogOut,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Milk
 } from 'lucide-react'
 import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
@@ -27,6 +28,7 @@ const navigation = [
   { name: 'Bills', href: '/bills', icon: FileText, color: 'from-orange-500 to-red-500' },
   { name: 'Groceries', href: '/groceries', icon: ShoppingCart, color: 'from-purple-500 to-pink-600' },
   { name: 'Export', href: '/export', icon: Download, color: 'from-indigo-500 to-purple-600' },
+  { name: 'Milk Calc', href: '/milk', icon: Milk, color: 'from-blue-400 to-cyan-500' },
   { name: 'Documents', href: '/documents', icon: FolderOpen, color: 'from-teal-500 to-cyan-600' },
   { name: 'Inventory', href: '/inventory', icon: Package, color: 'from-yellow-500 to-orange-500' },
 ]
